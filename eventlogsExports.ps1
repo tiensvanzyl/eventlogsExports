@@ -2,17 +2,16 @@
 #Set-ADServerSettings -ViewEntireForest $True
 ###################################################################################################################################################################################### 
 # Report used to check for specific Event ID's on servers and exporting the data to a HTML Report  
-#Version 0.1
+#Version 0.2
 # Author: Tiens van Zyl
 # Date 10 December 2015
-# Updated by Tiens van Zyl 7 December 2015
-# Updates: 
-# This script outputs Exchange Quota Defaults True for our weekly report 
-# 1. The script exports a CSV file with the current date.
-# 2. The CSV file export displays the DisplayName, IssueWarningQuota, ProhibitSendQuota and ProhibitSendReceiveQuota 
-# 3. The CSV file contains raw data that needs to be formatted in Excel
-# 4. Enter your mailbox server/s name in place of "ServerName". Use a wilcard if you have more than one server you need to query i.e. mailbox0* if your servers names are mailbox01, mailbox02 etc.
-# 5. Set the path to where you'd like to export the txt file. 
+# Updated by Tiens van Zyl 30 April 2018
+# Updates: Changed amd updated to the correct description.
+# 1. The script checks for specified Event ID's on several servers.
+# 2. Example to check for log sequence numbers in Exchange to make sure you catch any issues before the sequence numbers run out.
+# 3. The HTML file shows? //TODO
+# 4. Enter your server/s name/s in place of "ServerName" under declaring variables. I broke them up per country. Remove unwanted variables. 
+# 5. Set the path to where you'd like to export the HTML file. (under #Script)
 # 6. The FileName will be appended with the date that the script is run. i.e. WeeklyExchangeDefaultScript 2015-05-01.csv
 ######################################################################################################################################################################################
 #Styling the HTML Report - Credit to https://technet.microsoft.com/en-us/library/ff730936.aspx
@@ -59,5 +58,7 @@ $NamibiaMB03 = "ServerName"
 
 #ArrayName
 $MachineNames = $AddVariablesHereSeperatedByComma
+
+#Script
 Get-Eventlog -Logname Application -After (Get-Date).Adddays(-4)-computer $MachineNames | Where-Object {$_.EventId -eq 4002 -or $_.EventId -eq 4002} | Format-Table MachineName, TimeWritten, Source, EventID, Message -auto
 | ConvertTo-HTML -head $a | Out-File C:\Temp\Eventlogs.htm
